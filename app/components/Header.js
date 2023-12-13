@@ -1,21 +1,57 @@
 "use client"
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import logo from "@/public/logo.svg"
 import { Bell, ChevronDown, MessageCircle, Search } from 'lucide-react'
-import { useSession, signIn, signOut } from 'next-auth/react'
+import { useSession, signIn } from 'next-auth/react'
 import UserSettingModal from './UserSettingModal'
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+import app from "@/app/FilrebaseConfig"
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const Header = () => {
 
     const [ActiveIndex, setActiveIndex] = useState(0)
     const [usermodal, setusermodal] = useState(false)
+    const { data: session } = useSession()
+
+    const db = getFirestore(app);
+
+    const router = useRouter()
+
+    const handleProfilepage = () => {
+
+        const shortemail = (session.user.email).split("@")[0]
+        if (session?.user) {
+            router.push("/" + shortemail)
+        }
+    }
+
+    const saveUserData = async () => {
+        if (session?.user) {
+            await setDoc(doc(db, "user", session.user.email), {
+                username: session.user.name,
+                useremail: session.user.email,
+                userimage: session.user.image
+
+            });
+        }
+    }
+
+    useEffect(() => {
+        saveUserData()
+        const savedIndex = localStorage.getItem('activeIndex');
+        if (savedIndex !== null) {
+            setActiveIndex(parseInt(savedIndex));
+        }
+    }, [session])
+
 
     const routesdata = [
         {
             name: "Home",
             path: "/"
-
         },
         {
             name: "Explore",
@@ -27,14 +63,20 @@ const Header = () => {
         }
     ]
 
-    const { data: session } = useSession()
+    const handlepages = (index, item) => {
+        setActiveIndex(index);
+        localStorage.setItem('activeIndex', index.toString());
+        router.push(item.path)
+    }
+
+
 
 
     return (
         <div className='relative'>
             <header className="bg-white">
                 <div className="mx-auto max-w-screen px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 items-center justify-between gap-8">
+                    <div className="flex h-[6vh] items-center justify-between gap-8">
                         <div className="flex md:flex md:items-center md:gap-8">
                             <div className='h-[60px] w-[60px] flex items-center justify-center'>
                                 <a className="block text-teal-600" href="/">
@@ -44,7 +86,9 @@ const Header = () => {
                             <div className='flex items-center gap-4'>
                                 {routesdata.map((item, index) => {
                                     return (
-                                        <button className={ActiveIndex === index ? 'bg-black text-white py-3 px-6 text-sm capitalize font-semibold rounded-full' : " text-black py-3 px-6 text-sm capitalize font-semibold rounded-full"} key={index} onClick={() => setActiveIndex(index)}>{item.name}</button>
+
+                                        <button key={index} className={ActiveIndex === index ? 'bg-black text-white py-3 px-6 text-sm capitalize font-semibold rounded-full' : " text-black py-3 px-6 text-sm capitalize font-semibold rounded-full"} onClick={() => handlepages(index, item)}>{item.name}</button>
+
                                     )
                                 })}
                             </div>
@@ -99,7 +143,7 @@ const Header = () => {
                                             <MessageCircle />
                                         </div>
                                         <div className='flex items-center gap-2'>
-                                            <div className='h-[38px] w-[38px]'>
+                                            <div className='h-[38px] w-[38px]' onClick={handleProfilepage}>
                                                 <Image className='rounded-full object-contain cursor-pointer' src={session?.user?.image} height={120} width={120} alt='user-image' />
                                             </div>
                                             <div className='bg-white hover:bg-gray-200 rounded-full p-1 cursor-pointer'>
