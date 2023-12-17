@@ -1,45 +1,60 @@
 "use client"
-import React, { useState, useEffect } from 'react'
-import { getFirestore, doc, getDoc } from "firebase/firestore";
-import app from "@/app/FilrebaseConfig"
+import React, { useEffect, useState } from 'react'
+import { app } from "@/app/FilrebaseConfig"
+import { collection, getDocs, getDoc, doc, getFirestore, query, where } from 'firebase/firestore'
+import PinList from '../components/Pins/PinList';
 import UserInfo from './_components/UserInfo';
 
-const ProfilePage = ({ params }) => {
+function Profile({ params }) {
 
-    const [Userdata, setUserdata] = useState()
     const db = getFirestore(app);
-    const userid = params.userId + "@gmail.com"
-
-    const getuserdata = async (email) => {
-        if (email) {
-            const docRef = doc(db, "user", email);
-            const docSnap = await getDoc(docRef);
-
-            if (docSnap.exists()) {
-                setUserdata(docSnap.data());
-                console.log("Document data:", docSnap.data());
-
-            } else {
-                console.log("No such document!");
-            }
-        }
-    }
-
+    const [userInfo, setUserInfo] = useState();
+    const [listOfPins, setListOfPins] = useState([]);
 
     useEffect(() => {
-        params.userId && getuserdata(userid)
-        console.log(userid);
-    }, [])
+        console.log(params.userId.replace('%40', '@'))
+        if (params) {
+            getUserInfo(params.userId.replace('%40', '@'))
+        }
+    }, [params]);
 
 
+    const getUserInfo = async (email) => {
+        const docRef = doc(db, "user", email);
+        const docSnap = await getDoc(docRef);
 
+        if (docSnap.exists()) {
+
+            setUserInfo(docSnap.data())
+        } else {
+            // docSnap.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    }
+    useEffect(() => {
+        if (userInfo) {
+            getUserPins();
+        }
+    }, [userInfo])
+    const getUserPins = async () => {
+        setListOfPins([])
+        const q = query(collection(db, 'pinterest-post')
+            , where("email", '==', userInfo.email));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            setListOfPins(listOfPins => [...listOfPins, doc.data()]);
+        });
+    }
     return (
         <div>
-            <div className='flex justify-center'>
-                <UserInfo Userdata={Userdata} userid={userid} />
-            </div>
+            {userInfo ?
+                <div>
+                    <UserInfo userInfo={userInfo} />
+
+                    <PinList listOfPins={listOfPins} />
+                </div> : null}
         </div>
     )
 }
 
-export default ProfilePage
+export default Profile
