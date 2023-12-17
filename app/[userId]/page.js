@@ -43,6 +43,7 @@ function Profile({ params }) {
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             setListOfPins(listOfPins => [...listOfPins, doc.data()]);
+            console.log(listOfPins);
         });
     }
     return (

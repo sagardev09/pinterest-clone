@@ -7,14 +7,17 @@ import { app } from "@/app/FilrebaseConfig"
 import { doc, getFirestore, setDoc } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import spinner from "@/public/spinner.gif"
 
 function Form() {
     const { data: session } = useSession();
-    const [title, setTitle] = useState();
-    const [desc, setDesc] = useState();
-    const [link, setLink] = useState();
+    const [title, setTitle] = useState("");
+    const [desc, setDesc] = useState("");
+    const [link, setLink] = useState("");
+    const [tag, settag] = useState("");
     const [file, setFile] = useState();
     const [loading, setLoading] = useState(false);
+    const [selectedFile, setSelectedFile] = useState();
     const router = useRouter();
     const storage = getStorage(app)
     const db = getFirestore(app);
@@ -36,6 +39,7 @@ function Form() {
                     desc: desc,
                     link: link,
                     image: url,
+                    tag: tag,
                     userName: session.user.name,
                     email: session.user.email,
                     userImage: session.user.image,
@@ -60,35 +64,50 @@ function Form() {
                     className='bg-red-500 p-2
             text-white font-semibold px-3 
             rounded-lg'>
-                    {loading ? <Image src="/loading-indicator.png"
+                    {loading ? <Image src={spinner}
                         width={30}
                         height={30}
                         alt='loading'
-                        className='animate-spin' /> :
-                        <span>Save</span>}</button>
+                        className='animate-spin mix-blend-multiply' /> :
+                        <span>Save</span>}
+                </button>
             </div>
-            <div className='grid grid-cols-1 lg:grid-cols-3 gap-10'>
-
-                <UploadImage setFile={(file) => setFile(file)} />
-
-                <div className="col-span-2">
-                    <div className='w-[100%]'>
-                        <input type="text" placeholder='Add your title'
-                            onChange={(e) => setTitle(e.target.value)}
-                            className='text-[35px] outline-none font-bold w-full
-        border-b-[2px] border-gray-400 placeholder-gray-400'/>
-                        <h2 className='text-[12px] mb-8 w-full  text-gray-400'>The first 40 Charaters are
-                            what usually show up in feeds</h2>
+            <div className='flex items-start gap-10'>
+                <div className='flex-1 h-full w-full'>
+                    <UploadImage setFile={(file) => setFile(file)} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
+                </div>
+                <div className="flex-1 flex flex-col gap-2">
+                    <div>
+                        <label for="helper-text" className={!selectedFile ? "block mb-2 text-sm font-medium text-gray-500" : "block mb-2 text-sm font-medium text-gray-900"}>Title</label>
+                        <input disabled={!selectedFile} type="email" id="helper-text" aria-describedby="helper-text-explanation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Add a title" onChange={(e) => setTitle(e.target.value)} />
+                    </div>
+                    <div>
+                        <label for="helper-text" className={!selectedFile ? "block mb-2 text-sm font-medium text-gray-500" : "block mb-2 text-sm font-medium text-gray-900"}> Description</label>
                         <textarea type="text"
+                            disabled={!selectedFile}
+                            rows={6}
                             onChange={(e) => setDesc(e.target.value)}
                             placeholder='Tell everyone what your pin is about'
-                            className=' outline-none  w-full mt-8 pb-4 text-[14px]
-        border-b-[2px] border-gray-400 placeholder-gray-400'/>
-                        <input type="text"
-                            onChange={(e) => setLink(e.target.value)}
-                            placeholder='Add a Destination Link'
-                            className=' outline-none  w-full  pb-4 mt-[90px]
-        border-b-[2px] border-gray-400 placeholder-gray-400'/>
+                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 resize-none' />
+                    </div>
+                    <div>
+                        <label for="categories" className={!selectedFile ? "block mb-2 text-sm font-medium text-gray-500" : "block mb-2 text-sm font-medium text-gray-900"}>Category</label>
+                        <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+                            <option selected>Choose a country</option>
+                            <option value="US">United States</option>
+                            <option value="CA">Canada</option>
+                            <option value="FR">France</option>
+                            <option value="DE">Germany</option>
+                        </select>
+
+                    </div>
+                    <div>
+                        <label for="helper-text" className={!selectedFile ? "block mb-2 text-sm font-medium text-gray-500" : "block mb-2 text-sm font-medium text-gray-900"}>Link</label>
+                        <input disabled={!selectedFile} type="email" id="helper-text" aria-describedby="helper-text-explanation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder='Add a Destination Link' onChange={(e) => setLink(e.target.value)} />
+                    </div>
+                    <div>
+                        <label for="helper-text" className={!selectedFile ? "block mb-2 text-sm font-medium text-gray-500" : "block mb-2 text-sm font-medium text-gray-900"}>Tagged topics</label>
+                        <input disabled={!selectedFile} type="email" id="helper-text" aria-describedby="helper-text-explanation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Search for a tag" onChange={(e) => settag(e.target.value)} />
                     </div>
                 </div>
             </div>

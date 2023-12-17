@@ -4,11 +4,6 @@ import { useRouter } from 'next/navigation'
 
 function PinItem({ pin }) {
     const router = useRouter();
-    const user = {
-        name: pin?.userName,
-        image: pin?.userImage,
-
-    }
     return (
         <div className=''>
             <div class="relative 

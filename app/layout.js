@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Header from './components/Header'
 import Provider from './Provider'
+import { SavedPinsProvider } from './utils/SavedPinsContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -13,18 +14,21 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <Provider>
-        <body className={inter.className}>
-          <div className='flex flex-col gap-2'>
-            <div>
-              <Header />
+      <SavedPinsProvider>
+        <Provider>
+          <body className={inter.className}>
+            <div className='flex flex-col gap-2'>
+              <div>
+                <Header />
+              </div>
+              <div>
+                {children}
+              </div>
             </div>
-            <div>
-              {children}
-            </div>
-          </div>
-        </body>
-      </Provider>
+          </body>
+        </Provider>
+      </SavedPinsProvider>
+
     </html>
   )
 }

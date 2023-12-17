@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { useSession, signIn, signOut } from "next-auth/react"
 import { doc, getFirestore, setDoc } from "firebase/firestore";
 import { HiBell, HiChat } from "react-icons/hi";
+import { BsFillSave2Fill } from "react-icons/bs";
 import { app } from "@/app/FilrebaseConfig"
 import { useRouter } from 'next/navigation';
 import logo from "@/public/logo.svg"
@@ -43,7 +44,7 @@ function Header() {
 
     return (
         <div className='flex justify-between 
-     gap-3 md:gap-2 items-center px-6 py-3 relative ' >
+     gap-3 md:gap-2 items-center px-6 py-3 relative h-[7vh] ' >
             <Image src={logo} alt='logo'
                 width={50} height={50} onClick={() => router.push('/')}
                 className='hover:bg-gray-300 p-2
@@ -66,23 +67,27 @@ function Header() {
                     className='bg-transparent outline-none w-full text-[18px]' />
             </div>
             <div className='flex items-center gap-4'>
-                <HiBell className='text-[25px] md:text-[45px] text-gray-500 cursor-pointer' />
-                <HiChat className='text-[25px] md:text-[45px] text-gray-500 cursor-pointer' />
                 {session?.user ?
-                    <div className='flex items-center gap-2'>
-                        <Image src={session.user.image}
-                            onClick={() => router.push('/' + session.user.email)}
-                            alt='user-image' width={50} height={50}
-                            className='hover:bg-gray-300 p-2
+                    <> <HiBell className='text-[25px] md:text-[35px] text-gray-500 cursor-pointer' />
+                        <HiChat className='text-[25px] md:text-[35px] text-gray-500 cursor-pointer' />
+                        <BsFillSave2Fill className='text-[25px] md:text-[30px] text-gray-500 cursor-pointer' onClick={() => router.push("/saved")} />
+
+                        <div className='flex items-center gap-2'>
+                            <Image src={session.user.image}
+                                onClick={() => router.push('/' + session.user.email)}
+                                alt='user-image' width={50} height={50}
+                                className='hover:bg-gray-300 p-2
         rounded-full cursor-pointer h-[80%]'/>
-                        <div className='hover:bg-gray-300 p-2
+                            <div className='hover:bg-gray-300 p-2
         rounded-full cursor-pointer'>
-                            <ChevronDown className='h-[20px] w-[20px]' onClick={() => setusermodal(!usermodal)} />
+                                <ChevronDown className='h-[20px] w-[20px]' onClick={() => setusermodal(!usermodal)} />
+                            </div>
                         </div>
-                    </div>
+                    </>
                     :
                     <button className='font-semibold p-2 px-4 rounded-full'
-                        onClick={() => signIn()}>Login</button>}
+                        onClick={() => signIn()}>Login</button>
+                }
             </div>
 
             {

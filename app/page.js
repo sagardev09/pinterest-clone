@@ -1,7 +1,9 @@
-import Image from 'next/image'
+import AllPins from './components/AllPins'
 
 export default function Home() {
   return (
-    <main></main>
+    <main>
+      <AllPins />
+    </main>
   )
 }
