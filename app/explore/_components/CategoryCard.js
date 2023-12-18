@@ -1,18 +1,18 @@
 "use client"
 import Image from 'next/image';
 import React from 'react'
-import design from "@/public/design.avif"
-import art from "@/public/art.avif"
-import diy from "@/public/diy.avif"
-import fashion from "@/public/fashion.avif"
-import fitness from "@/public/fitness.avif"
-import food from "@/public/food.avif"
-import home from "@/public/home.avif"
-import photography from "@/public/photography.avif"
-import quotes from "@/public/quotes.avif"
-import technology from "@/public/technology.avif"
-import travel from "@/public/travel.avif"
-import wedding from "@/public/wedding.avif"
+import design from "@/public/design.jpg"
+import art from "@/public/art.jpg"
+import diy from "@/public/diy.jpg"
+import fashion from "@/public/fashion.jpg"
+import fitness from "@/public/fitness.jpg"
+import food from "@/public/food.jpg"
+import home from "@/public/home.jpg"
+import photography from "@/public/photography.jpg"
+import quotes from "@/public/quotes.jpg"
+import technology from "@/public/technology.jpg"
+import travel from "@/public/travel.jpg"
+import wedding from "@/public/wedding.jpg"
 import { useRouter } from 'next/navigation';
 
 const CategoryCard = () => {
