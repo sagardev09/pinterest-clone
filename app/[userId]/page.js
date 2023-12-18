@@ -4,12 +4,15 @@ import { app } from "@/app/FilrebaseConfig"
 import { collection, getDocs, getDoc, doc, getFirestore, query, where } from 'firebase/firestore'
 import PinList from '../components/Pins/PinList';
 import UserInfo from './_components/UserInfo';
+import Loading from "@/public/Ghost.gif"
+import Image from 'next/image';
 
 function Profile({ params }) {
 
     const db = getFirestore(app);
     const [userInfo, setUserInfo] = useState();
     const [listOfPins, setListOfPins] = useState([]);
+    const [loading, setloading] = useState(true)
 
     useEffect(() => {
         console.log(params.userId.replace('%40', '@'))
@@ -20,6 +23,7 @@ function Profile({ params }) {
 
 
     const getUserInfo = async (email) => {
+
         const docRef = doc(db, "user", email);
         const docSnap = await getDoc(docRef);
 
@@ -37,23 +41,34 @@ function Profile({ params }) {
         }
     }, [userInfo])
     const getUserPins = async () => {
-        setListOfPins([])
-        const q = query(collection(db, 'pinterest-post')
-            , where("email", '==', userInfo.email));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-            setListOfPins(listOfPins => [...listOfPins, doc.data()]);
-            console.log(listOfPins);
-        });
+        try {
+            setListOfPins([])
+            const q = query(collection(db, 'pinterest-post')
+                , where("email", '==', userInfo.email));
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+                setListOfPins(listOfPins => [...listOfPins, doc.data()]);
+                console.log(listOfPins);
+            });
+        } catch (error) {
+            console.log("something occurred", error);
+        } finally {
+            setloading(false)
+        }
+
     }
     return (
         <div>
-            {userInfo ?
-                <div>
+            {!userInfo || loading ?
+                <div className='flex flex-col gap-3 h-full w-[100vw] items-center justify-center'>
+                    <Image src={Loading} alt='loading' className='h-[200px] w-[200px] object-contain' />
+                    <h5 className='text-lg font-semibold capitalize'>Loading...</h5>
+                </div>
+                : <div>
                     <UserInfo userInfo={userInfo} />
 
                     <PinList listOfPins={listOfPins} />
-                </div> : null}
+                </div>}
         </div>
     )
 }

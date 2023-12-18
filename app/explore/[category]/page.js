@@ -6,6 +6,8 @@ import SingleCard from './_components/SingleCard';
 import { ChevronLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import EmptyCategoty from '../_components/EmptyCategoty';
+import Image from 'next/image';
+import Loading from "@/public/Ghost.gif"
 
 const CategoryPage = ({ params }) => {
     const router = useRouter()
@@ -55,7 +57,10 @@ const CategoryPage = ({ params }) => {
             </div>
             <div className="">
                 {loading ? (
-                    <p>Loading...</p>
+                    <div className='flex flex-col gap-3 h-full w-[100vw] items-center justify-center'>
+                        <Image src={Loading} alt='loading' className='h-[200px] w-[200px] object-contain' />
+                        <h5 className='text-lg font-semibold capitalize'>Loading...</h5>
+                    </div>
                 ) : categorydata.length === 0 ? (
                     <div className='w-[100vw] h-full flex items-center justify-center'>
                         <EmptyCategoty />
