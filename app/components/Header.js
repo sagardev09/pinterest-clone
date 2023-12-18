@@ -91,7 +91,7 @@ function Header() {
             </div>
 
             {
-                <div className='absolute right-0 top-[75px]'>
+                <div className='absolute right-0 top-[75px] z-[1000]'>
                     {
                         usermodal ? <UserSettingModal /> : null
                     }
