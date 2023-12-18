@@ -1,6 +1,25 @@
 import Image from 'next/image';
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 function UploadImage({ setFile, selectedFile, setSelectedFile }) {
+
+    useEffect(() => {
+        console.log("file", selectedFile);
+
+    }, [selectedFile])
+
+
+    const [isImage, setIsImage] = useState(true);
+
+    const handleFileChange = (e) => {
+
+        const file = e.target.files[0];
+        setFile(file);
+        setSelectedFile(file);
+
+        // Check if the file type is an image
+        const fileType = file.type.split('/')[0];
+        setIsImage(fileType === 'image');
+    };
 
     return (
 
@@ -11,15 +30,28 @@ function UploadImage({ setFile, selectedFile, setSelectedFile }) {
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                     </svg>
                     <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG, GIF, or MP4</p>
                 </div> : null}
-                {
-                    selectedFile ? <Image src={window.URL.createObjectURL(selectedFile)} alt='img' className='object-contain h-[90%]' height={800} width={500} /> : null
-                }
-                <input id="dropzone-file" type="file" className="hidden" onChange={(e) => {
-                    setFile(e.target.files[0]);
-                    setSelectedFile(e.target.files[0])
-                }} />
+                {selectedFile ? (
+                    isImage ? (
+                        <Image
+                            src={window.URL.createObjectURL(selectedFile)}
+                            alt="img"
+                            className="object-contain h-[90%]"
+                            height={800}
+                            width={500}
+                        />
+                    ) : (
+                        <video className="object-contain h-[90%]" controls>
+                            <source src={window.URL.createObjectURL(selectedFile)} type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    )
+                ) : null}
+                <input id="dropzone-file" type="file" className="hidden"
+                    accept='image/*, video/*'
+                    onChange={handleFileChange}
+                />
             </label>
         </div>
 

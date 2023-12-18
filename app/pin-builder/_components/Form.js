@@ -11,9 +11,6 @@ import spinner from "@/public/spinner.gif"
 
 function Form() {
 
-
-
-
     const { data: session } = useSession();
     const [title, setTitle] = useState("");
     const [desc, setDesc] = useState("");
@@ -53,6 +50,7 @@ function Form() {
                     link: link,
                     image: url,
                     tag: tag,
+                    type: file.type,
                     category: category,
                     userName: session.user.name,
                     email: session.user.email,

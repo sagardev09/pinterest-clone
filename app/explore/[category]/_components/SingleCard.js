@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 const SingleCard = ({ item }) => {
 
     const router = useRouter()
+    const isVideo = item.type === 'video/mp4';
 
     return (
         <div className='relative group/item'>
@@ -20,13 +21,25 @@ const SingleCard = ({ item }) => {
    cursor-zoom-in
    " onClick={() => router.push("/pin/" + item.id)}>
 
-                <Image src={item.image}
-                    alt={item.title}
-                    width={500}
-                    height={500}
-                    className='rounded-3xl 
-    cursor-pointer relative z-0'
-                />
+                {isVideo ? (
+                    <video
+                        src={item.image}
+                        width={500}
+                        height={500}
+                        className="rounded-3xl cursor-pointer relative z-0"
+                        autoPlay
+                        muted
+                        loop
+                    ></video>
+                ) : (
+                    <Image
+                        src={item.image}
+                        alt={item.title}
+                        width={500}
+                        height={500}
+                        className="rounded-3xl cursor-pointer relative z-0"
+                    />
+                )}
             </div>
             <div className='absolute top-4 left-4 bg-red-500 text-white rounded-full p-2 px-3 z-[1000] cursor-pointer flex items-center gap-1 invisible group-hover/item:visible hover:bg-red-600 '>
                 <h5 className='text-[10px]'>Profile</h5>
