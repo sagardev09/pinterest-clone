@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import UploadImage from './UploadImage'
 import { useSession } from "next-auth/react"
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
@@ -10,6 +10,10 @@ import Image from 'next/image'
 import spinner from "@/public/spinner.gif"
 
 function Form() {
+
+
+
+
     const { data: session } = useSession();
     const [title, setTitle] = useState("");
     const [desc, setDesc] = useState("");
@@ -18,14 +22,23 @@ function Form() {
     const [file, setFile] = useState();
     const [loading, setLoading] = useState(false);
     const [selectedFile, setSelectedFile] = useState();
+    const [category, setcategory] = useState("")
     const router = useRouter();
     const storage = getStorage(app)
     const db = getFirestore(app);
     const postId = Date.now().toString();
+
     const onSave = () => {
-        setLoading(true)
-        uploadFile();
+        if (title.trim().length === 0 || !category) {
+            alert("Please fill in the title and select a category.")
+        } else {
+            setLoading(true)
+            uploadFile();
+        }
     }
+    useEffect(() => {
+        console.log(category);
+    }, [category])
 
     const uploadFile = () => {
         const storageRef = ref(storage, 'pinterest/' + file.name);
@@ -40,6 +53,7 @@ function Form() {
                     link: link,
                     image: url,
                     tag: tag,
+                    category: category,
                     userName: session.user.name,
                     email: session.user.email,
                     userImage: session.user.image,
@@ -78,7 +92,7 @@ function Form() {
                 </div>
                 <div className="flex-1 flex flex-col gap-2">
                     <div>
-                        <label for="helper-text" className={!selectedFile ? "block mb-2 text-sm font-medium text-gray-500" : "block mb-2 text-sm font-medium text-gray-900"}>Title</label>
+                        <label for="helper-text" className={!selectedFile ? "block mb-2 text-sm font-medium text-gray-500" : "block mb-2 text-sm font-medium text-gray-900"}>Title <span className='text-red-500'>*</span></label>
                         <input disabled={!selectedFile} type="email" id="helper-text" aria-describedby="helper-text-explanation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Add a title" onChange={(e) => setTitle(e.target.value)} />
                     </div>
                     <div>
@@ -91,13 +105,21 @@ function Form() {
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 resize-none' />
                     </div>
                     <div>
-                        <label for="categories" className={!selectedFile ? "block mb-2 text-sm font-medium text-gray-500" : "block mb-2 text-sm font-medium text-gray-900"}>Category</label>
-                        <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
-                            <option selected>Choose a country</option>
-                            <option value="US">United States</option>
-                            <option value="CA">Canada</option>
-                            <option value="FR">France</option>
-                            <option value="DE">Germany</option>
+                        <label for="categories" className={!selectedFile ? "block mb-2 text-sm font-medium text-gray-500" : "block mb-2 text-sm font-medium text-gray-900"}>Category<span className='text-red-500'>*</span></label>
+                        <select id="countries" value={category} className="bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " onChange={(e) => setcategory(e.target.value)} placeholder="select a category">
+                            <option value="default">Select a category</option>
+                            <option value="design">Design Inspiration</option>
+                            <option value="fashion">Fashion Trends</option>
+                            <option value="art">Artistic Creations</option>
+                            <option value="home">Home Decor Ideas</option>
+                            <option value="photography">Photography</option>
+                            <option value="food">Food and Recipes</option>
+                            <option value="travel">Travel Destinations</option>
+                            <option value="wedding">Wedding Planning</option>
+                            <option value="fitness">Fitness Motivation</option>
+                            <option value="quotes">Inspirational Quotes</option>
+                            <option value="technology">Technology Innovations</option>
+                            <option value="diy">DIY Projects</option>
                         </select>
 
                     </div>

@@ -18,10 +18,10 @@ export default function RootLayout({ children }) {
         <Provider>
           <body className={inter.className}>
             <div className='flex flex-col gap-2'>
-              <div>
+              <div className='fixed z-[1000] w-full bg-white'>
                 <Header />
               </div>
-              <div>
+              <div className='mt-[70px]'>
                 {children}
               </div>
             </div>
