@@ -6,6 +6,7 @@ import PinList from '../components/Pins/PinList';
 import UserInfo from './_components/UserInfo';
 import Loading from "@/public/Ghost.gif"
 import Image from 'next/image';
+import { Vortex } from 'react-loader-spinner';
 
 function Profile({ params }) {
 
@@ -61,7 +62,15 @@ function Profile({ params }) {
         <div>
             {!userInfo || loading ?
                 <div className='flex flex-col gap-3 h-full w-[100vw] items-center justify-center'>
-                    <Image src={Loading} alt='loading' className='h-[200px] w-[200px] object-contain' />
+                    <Vortex
+                        visible={true}
+                        height="80"
+                        width="80"
+                        ariaLabel="vortex-loading"
+                        wrapperStyle={{}}
+                        wrapperClass="vortex-wrapper"
+                        colors={['red', 'green', 'blue', 'yellow', 'orange', 'purple']}
+                    />
                     <h5 className='text-lg font-semibold capitalize'>Loading...</h5>
                 </div>
                 : <div>
