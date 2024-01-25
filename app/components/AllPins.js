@@ -1,10 +1,9 @@
 "use client"
-import React, { useState, useEffect } from 'react'
-import Image from 'next/image'
+import React, { useState, useEffect } from 'react';
 import { collection, getDocs, getFirestore } from "firebase/firestore";
-import { app } from "@/app/FilrebaseConfig"
+import { app } from "@/app/FilrebaseConfig";
 import PinsInfo from './AllPins/PinsInfo';
-import Loading from "@/public/Ghost.gif"
+import { Vortex } from 'react-loader-spinner';
 
 const AllPins = () => {
 
@@ -40,7 +39,15 @@ const AllPins = () => {
             {
                 loading ? (
                     <div className='flex flex-col gap-3 h-full w-[100vw] items-center justify-center'>
-                        <Image src={Loading} alt='loading' className='h-[200px] w-[200px] object-contain' />
+                        <Vortex
+                            visible={true}
+                            height="80"
+                            width="80"
+                            ariaLabel="vortex-loading"
+                            wrapperStyle={{}}
+                            wrapperClass="vortex-wrapper"
+                            colors={['red', 'green', 'blue', 'yellow', 'orange', 'purple']}
+                        />
                         <h5 className='text-lg font-semibold capitalize'>Loading...</h5>
                     </div>
                 ) : (

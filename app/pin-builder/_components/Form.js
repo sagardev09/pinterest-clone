@@ -8,6 +8,7 @@ import { doc, getFirestore, setDoc } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import spinner from "@/public/spinner.gif"
+import { Vortex } from 'react-loader-spinner'
 
 function Form() {
 
@@ -76,11 +77,15 @@ function Form() {
                     className='bg-red-500 p-2
             text-white font-semibold px-3 
             rounded-lg'>
-                    {loading ? <Image src={spinner}
-                        width={30}
-                        height={30}
-                        alt='loading'
-                        className='animate-spin mix-blend-multiply' /> :
+                    {loading ? <Vortex
+                        visible={true}
+                        height="40"
+                        width="40"
+                        ariaLabel="vortex-loading"
+                        wrapperStyle={{}}
+                        wrapperClass="vortex-wrapper"
+                        colors={['red', 'green', 'blue', 'yellow', 'orange', 'purple']}
+                    /> :
                         <span>Save</span>}
                 </button>
             </div>

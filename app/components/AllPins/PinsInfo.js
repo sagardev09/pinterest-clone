@@ -23,7 +23,7 @@ const PinsInfo = ({ pin }) => {
 
     return (
         <div className='relative group/item'>
-            <div class="relative 
+            <div className="relative 
        before:absolute
        before:h-full before:w-full
        before:rounded-3xl
